@@ -278,9 +278,7 @@ ErrorCode.FLOW_IN_USE,
 
 export type InvalidJwtTokenErrorParams = BaseErrorParams<
 ErrorCode.INVALID_OR_EXPIRED_JWT_TOKEN,
-{
-    token: string
-}
+Record<string, never>
 >
 
 export type TestTriggerFailedErrorParams = BaseErrorParams<
