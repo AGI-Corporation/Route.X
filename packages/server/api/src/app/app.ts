@@ -83,6 +83,7 @@ import { pieceSyncService } from './pieces/piece-sync-service'
 import { platformModule } from './platform/platform.module'
 import { platformService } from './platform/platform.service'
 import { projectHooks } from './project/project-hooks'
+import { platformUtils } from './platform/platform.utils'
 import { projectModule } from './project/project-module'
 import { storeEntryModule } from './store-entry/store-entry.module'
 import { tablesModule } from './tables/tables.module'
@@ -250,12 +251,14 @@ export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> =
                 return reply.send('The code is missing in url')
             }
             else {
+                const platformId = await platformUtils.getPlatformIdForRequest(request)
+                const targetOrigin = new URL(await domainHelper.getPublicUrl({ platformId })).origin
                 return reply
                     .type('text/html')
                     .send(
                         `<script>if(window.opener){window.opener.postMessage({ 'code': '${encodeURIComponent(
                             params.code,
-                        )}' },'*')}</script> <html>Redirect succuesfully, this window should close now</html>`,
+                        )}' }, '${targetOrigin}')}</script> <html>Redirect successfully, this window should close now</html>`,
                     )
             }
         },
