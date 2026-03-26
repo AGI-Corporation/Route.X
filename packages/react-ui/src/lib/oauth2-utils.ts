@@ -72,23 +72,21 @@ function constructUrl(params: OAuth2PopupParams, pckeChallenge: string) {
 }
 
 function getCode(redirectUrl: string): Promise<string> {
-  let expectedOrigin: string | null = null;
-  try {
-    expectedOrigin = new URL(redirectUrl).origin;
-  } catch (e) {
-    // ignore
-  }
   return new Promise<string>((resolve) => {
     window.addEventListener('message', function handler(event) {
-      if (
-        redirectUrl &&
-        expectedOrigin &&
-        event.origin === expectedOrigin &&
-        event.data['code']
-      ) {
-        resolve(decodeURIComponent(event.data.code));
-        currentPopup?.close();
-        window.removeEventListener('message', handler);
+      try {
+        const expectedOrigin = new URL(redirectUrl).origin;
+        if (
+          redirectUrl &&
+          event.origin === expectedOrigin &&
+          event.data['code']
+        ) {
+          resolve(decodeURIComponent(event.data.code));
+          currentPopup?.close();
+          window.removeEventListener('message', handler);
+        }
+      } catch (e) {
+        // ignore
       }
     });
   });
