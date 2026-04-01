@@ -47,6 +47,7 @@ export const nandaManifestService = (logger: FastifyBaseLogger) => ({
                 'https://projectnanda.org/context/agent-facts/v1'
             ],
             id: `urn:uuid:${projectId}`,
+            agent_id: `urn:uuid:${mcp.id}`,
             type: 'AgentFacts',
             agentName: `MCP.My.ID Project ${projectId}`,
             ttl: 3600,
@@ -69,7 +70,7 @@ export const nandaManifestService = (logger: FastifyBaseLogger) => ({
             trust_anchor: 'MCP_MY_ID_VERIFIED',
             nanda_version: '1.0.0',
             composition: {
-                blended_tools_count: 0, // Placeholder for dynamically counting blended tools
+                blended_tools_count: capabilities.reduce((sum, c) => sum + c.tools.length, 0),
                 data_fusion: 'ENABLED',
             }
         }

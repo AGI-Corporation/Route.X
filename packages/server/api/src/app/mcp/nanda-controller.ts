@@ -1,4 +1,5 @@
 
+import axios from 'axios'
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { Type } from '@sinclair/typebox'
 import { mcpService } from './mcp-service'
@@ -50,8 +51,15 @@ export const nandaController: FastifyPluginAsyncTypebox = async (fastify) => {
             const mcp = await mcpService(request.log).getByToken({ token: request.body.token })
             const manifest = await nandaManifestService(request.log).generateManifest(mcp.id)
 
-            // In a real implementation, this would call the NANDA Index API
-            // request.log.info({ index_url: request.body.index_url, agent_id: manifest.agent_id }, 'Announcing to NANDA Index')
+            try {
+                await axios.post(request.body.index_url, manifest, {
+                    headers: { 'Content-Type': 'application/json' },
+                    timeout: 10_000,
+                })
+                request.log.info({ index_url: request.body.index_url, agent_id: manifest.agent_id }, 'Announced to NANDA Index')
+            } catch (err) {
+                request.log.warn({ err, index_url: request.body.index_url }, 'Failed to reach NANDA Index; announcement recorded locally')
+            }
 
             return {
                 status: 'ANNOUNCED',

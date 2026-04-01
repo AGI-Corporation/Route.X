@@ -16,15 +16,27 @@ export const getPatientAction = createAction({
   },
   async run(context) {
     const { patient_id } = context.propsValue;
-    const proxyUrl = context.auth.props?.['proxy_url'];
+    const auth = context.auth as { access_token: string; props?: Record<string, unknown> };
+    const proxyUrl = auth.props?.['proxy_url'] as string | undefined;
 
-    // In a real execution, we would call the proxy
-    return {
-        resourceType: "Patient",
-        id: patient_id,
-        name: [{ family: "Smith", given: ["John"] }],
-        gender: "male",
-        birthDate: "1980-01-01"
-    };
+    if (!proxyUrl) {
+      throw new Error('Proxy Smart URL is not configured. Please update your FHIR connection.');
+    }
+
+    const url = `${proxyUrl.replace(/\/$/, '')}/fhir/R4/Patient/${encodeURIComponent(patient_id)}`;
+
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${auth.access_token}`,
+        'Accept': 'application/fhir+json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => response.statusText);
+      throw new Error(`FHIR request failed [${response.status}]: ${errorText}`);
+    }
+
+    return response.json();
   },
 });

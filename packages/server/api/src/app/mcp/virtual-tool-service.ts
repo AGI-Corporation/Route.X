@@ -1,6 +1,7 @@
 
+import axios from 'axios'
 import { FastifyBaseLogger } from 'fastify'
-import { ActionBase, PiecePropertyMap, Property, PropertyType } from '@activepieces/pieces-framework'
+import { ActionBase, PiecePropertyMap, Property } from '@activepieces/pieces-framework'
 import { isNil } from '@activepieces/shared'
 
 export type BlendedTool = {
@@ -9,6 +10,29 @@ export type BlendedTool = {
     description: string
     baseActions: { pieceName: string, actionName: string }[]
     ruleSets: any[] // Guido-inspired rules
+}
+
+function mapOpenApiParamToProperty(param: any) {
+    const schema = param.schema || {}
+    const type: string = schema.type || 'string'
+    const common = {
+        displayName: param.name,
+        description: param.description || '',
+        required: param.required || false,
+    }
+    switch (type) {
+        case 'integer':
+        case 'number':
+            return Property.Number(common)
+        case 'boolean':
+            return Property.Checkbox({ ...common, required: common.required })
+        case 'array':
+            return Property.Array(common)
+        case 'object':
+            return Property.Json(common)
+        default:
+            return Property.ShortText(common)
+    }
 }
 
 export const virtualToolService = (logger: FastifyBaseLogger) => ({
@@ -90,24 +114,22 @@ export const virtualToolService = (logger: FastifyBaseLogger) => ({
                 const name = op.operationId || `${method}_${path.replace(/\//g, '_')}`
 
                 const props: PiecePropertyMap = {}
+                const paramMeta: { name: string; in: string }[] = []
 
-                // Map parameters
+                // Map parameters with proper type coercion
                 if (op.parameters) {
                     for (const param of op.parameters) {
-                        props[param.name] = Property.ShortText({
-                            displayName: param.name,
-                            description: param.description || '',
-                            required: param.required || false,
-                        })
+                        props[param.name] = mapOpenApiParamToProperty(param)
+                        paramMeta.push({ name: param.name, in: param.in ?? 'query' })
                     }
                 }
 
-                // Map request body (simplified)
+                // Map request body
                 if (op.requestBody?.content?.['application/json']?.schema) {
                     props['body'] = Property.Json({
                         displayName: 'Request Body',
                         description: 'JSON request body',
-                        required: true,
+                        required: op.requestBody.required ?? true,
                     })
                 }
 
@@ -116,22 +138,33 @@ export const virtualToolService = (logger: FastifyBaseLogger) => ({
                     displayName: op.summary || name,
                     description: op.description || op.summary || `Execute ${method.toUpperCase()} ${path}`,
                     props,
-                    // Use a hidden property to store metadata for execution
                     requireAuth: !!op.security,
                     run: async (context) => {
-                        // Proto-execution logic for OpenAPI-imported tools
-                        const queryParams = { ...context.propsValue }
-                        delete queryParams['body']
+                        const propsValue = { ...context.propsValue }
+                        const body = propsValue['body']
+                        delete propsValue['body']
 
-                        return {
-                            message: `Executing ${method.toUpperCase()} ${serverUrl}${path}`,
-                            request: {
-                                url: `${serverUrl}${path}`,
-                                method: method.toUpperCase(),
-                                queryParams,
-                                body: context.propsValue['body']
+                        // Resolve path parameters and collect query parameters
+                        let resolvedPath = path
+                        const queryParams: Record<string, any> = {}
+
+                        for (const pm of paramMeta) {
+                            const val = propsValue[pm.name]
+                            if (isNil(val)) continue
+                            if (pm.in === 'path') {
+                                resolvedPath = resolvedPath.replace(`{${pm.name}}`, encodeURIComponent(String(val)))
+                            } else if (pm.in === 'query') {
+                                queryParams[pm.name] = val
                             }
                         }
+
+                        const response = await axios({
+                            method: method.toUpperCase(),
+                            url: `${serverUrl}${resolvedPath}`,
+                            params: Object.keys(queryParams).length > 0 ? queryParams : undefined,
+                            data: body,
+                        })
+                        return response.data
                     }
                 } as unknown as ActionBase)
             }

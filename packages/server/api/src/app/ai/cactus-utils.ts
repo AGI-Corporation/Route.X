@@ -74,6 +74,17 @@ export function inferParamRole(paramName: string, pinfo: any): SemanticRole {
 
 const TIME_RE = /(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i;
 const DURATION_RE = /(\d+)\s*(?:minutes?|mins?)\b/i;
+// Matches a proper-noun name following a directive verb or the word "to/for"
+const PERSON_RE = /(?:(?:to|for|remind|call|contact|text|message|send\s+to)\s+)([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/;
+// Matches a place after spatial prepositions
+const LOCATION_RE = /(?:^|[\s,])(?:in|at|near|from)\s+([A-Za-z][a-zA-Z\s]{1,40})(?=[.,\s]|$)/;
+// Matches content inside double or single quotes, or text following "saying"/"message:"
+const QUOTED_RE = /"([^"]+)"|'([^']+)'/;
+const MESSAGE_AFTER_RE = /(?:saying|message:)\s+(.+)/i;
+// Matches the track/playlist name in play commands
+const SONG_RE = /(?:play|queue|add)\s+(.+?)(?:\s+by\s+|\s+from\s+|$)/i;
+// Matches the search term after common search verbs
+const QUERY_RE = /(?:search\s+(?:for|about)|find|look\s+(?:up|for)|about)\s+(.+)/i;
 
 export function extractForRole(role: SemanticRole, text: string): any {
     switch (role) {
@@ -100,7 +111,29 @@ export function extractForRole(role: SemanticRole, text: string): any {
             if (!m) return null;
             return `${m[1]}:${m[2] || '00'} ${m[3].toUpperCase()}`;
         }
-        // Add more role extractions as needed (Location, Person, etc via similar patterns)
+        case SemanticRole.PERSON: {
+            const m = text.match(PERSON_RE);
+            return m ? m[1].trim() : null;
+        }
+        case SemanticRole.LOCATION: {
+            const m = text.match(LOCATION_RE);
+            return m ? m[1].trim() : null;
+        }
+        case SemanticRole.MESSAGE:
+        case SemanticRole.TITLE: {
+            const quoted = text.match(QUOTED_RE);
+            if (quoted) return quoted[1] ?? quoted[2];
+            const after = text.match(MESSAGE_AFTER_RE);
+            return after ? after[1].trim() : null;
+        }
+        case SemanticRole.SONG: {
+            const m = text.match(SONG_RE);
+            return m ? m[1].trim() : null;
+        }
+        case SemanticRole.QUERY: {
+            const m = text.match(QUERY_RE);
+            return m ? m[1].trim() : null;
+        }
         default:
             return null;
     }
