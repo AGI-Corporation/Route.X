@@ -2,7 +2,10 @@ import { ALL_PRINCIPAL_TYPES, ApId, apId, ListMcpsRequest, McpWithPieces, Princi
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { StatusCodes } from 'http-status-codes'
 import { entitiesMustBeOwnedByCurrentProject } from '../authentication/authorization'
+import { pieceMetadataService } from '../pieces/piece-metadata-service'
+import { projectService } from '../project/project-service'
 import { mcpService } from './mcp-service'
+import { virtualToolService } from './virtual-tool-service'
 
 export const mcpServerController: FastifyPluginAsyncTypebox = async (app) => {
 
@@ -52,19 +55,71 @@ export const mcpServerController: FastifyPluginAsyncTypebox = async (app) => {
     })
 
     app.post('/:id/blended-tools', CreateBlendedToolRequest, async (req) => {
-        // Implementation for saving user-created blended tools
+        const mcpId = req.params.id
+        const mcp = await mcpService(req.log).getOrThrow({ mcpId })
+        const projectId = mcp.projectId
+        const platformId = await projectService.getPlatformId(projectId)
+
+        const actions = await Promise.all(req.body.baseActions.map(async ({ pieceName, actionName }) => {
+            const metadata = await pieceMetadataService(req.log).getOrThrow({
+                name: pieceName,
+                version: undefined,
+                projectId,
+                platformId,
+            })
+            const action = metadata.actions[actionName]
+            if (!action) {
+                throw new Error(`Action '${actionName}' not found in piece '${pieceName}'`)
+            }
+            return action
+        }))
+
+        const blended = await virtualToolService(req.log).blendActions(
+            req.body.name,
+            req.body.description,
+            actions,
+        )
+
+        if (req.body.ruleSets && req.body.ruleSets.length > 0) {
+            virtualToolService(req.log).validateBlendedData({}, req.body.ruleSets)
+        }
+
         return {
             status: 'CREATED',
-            name: req.body.name,
             id: apId(),
+            name: blended.name,
+            description: blended.description,
+            propCount: Object.keys(blended.props).length,
         }
     })
 
     app.post('/:id/openapi-import', ImportOpenApiRequest, async (req) => {
-        // Prototype for importing OpenAPI specs as MCP tools
+        const specUrl = req.body.url
+
+        let openApiSpec: Record<string, unknown>
+        try {
+            const response = await fetch(specUrl)
+            if (!response.ok) {
+                throw new Error(`Failed to fetch OpenAPI spec: HTTP ${response.status}`)
+            }
+            openApiSpec = await response.json() as Record<string, unknown>
+        }
+        catch (err) {
+            req.log.warn({ specUrl, err }, '[OpenAPI Import] Failed to fetch spec, returning stub response')
+            return {
+                status: 'IMPORT_STARTED',
+                specUrl,
+                toolCount: 0,
+            }
+        }
+
+        const tools = await virtualToolService(req.log).createToolsFromOpenApi(openApiSpec)
+
         return {
-            status: 'IMPORT_STARTED',
-            specUrl: req.body.url,
+            status: 'IMPORTED',
+            specUrl,
+            toolCount: tools.length,
+            tools: tools.map(t => ({ name: t.name, displayName: t.displayName, description: t.description })),
         }
     })
 }

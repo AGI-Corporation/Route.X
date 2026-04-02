@@ -1,5 +1,9 @@
 
 import { createPiece, PieceAuth, Property } from "@activepieces/pieces-framework";
+import { getPatientAction } from "./lib/actions/get-patient";
+import { createObservationAction } from "./lib/actions/create-observation";
+import { listConditionsAction } from "./lib/actions/list-conditions";
+import { scheduleAppointmentAction } from "./lib/actions/schedule-appointment";
 
 export const fhirAuth = PieceAuth.OAuth2({
     description: "Authenticate with your SMART on FHIR Proxy (e.g., Proxy Smart).",
@@ -23,6 +27,6 @@ export const fhir = createPiece({
   logoUrl: "https://cdn.activepieces.com/pieces/fhir.svg",
   authors: ['Jules'],
   description: 'Healthcare interoperability via FHIR R4 and SMART App Launch.',
-  actions: [getPatientAction],
+  actions: [getPatientAction, createObservationAction, listConditionsAction, scheduleAppointmentAction],
   triggers: [],
 });

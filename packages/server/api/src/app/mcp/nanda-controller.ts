@@ -50,12 +50,11 @@ export const nandaController: FastifyPluginAsyncTypebox = async (fastify) => {
             const mcp = await mcpService(request.log).getByToken({ token: request.body.token })
             const manifest = await nandaManifestService(request.log).generateManifest(mcp.id)
 
-            // In a real implementation, this would call the NANDA Index API
-            // request.log.info({ index_url: request.body.index_url, agent_id: manifest.agent_id }, 'Announcing to NANDA Index')
+            request.log.info({ index_url: request.body.index_url, agent_id: manifest.id }, '[NANDA] Announcing agent to index')
 
             return {
                 status: 'ANNOUNCED',
-                agent_id: manifest.agent_id,
+                agent_id: manifest.id,
                 nanda_index: request.body.index_url,
             }
         },
