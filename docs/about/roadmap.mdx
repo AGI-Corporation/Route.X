@@ -1,0 +1,191 @@
+---
+title: "Deep Integrated Roadmap"
+description: "Route.X's phased plan to build the foundational operating system for autonomous AI agents — from platform hardening through the open agentic web."
+icon: "map"
+---
+
+## Vision
+
+Route.X is the foundational operating system for autonomous AI agents — a platform where any developer, business, or AI system can discover, compose, and execute trusted agent workflows at planetary scale.
+
+---
+
+## Guiding Principles
+
+<CardGroup cols={2}>
+  <Card title="Deep Integration" icon="layer-group">
+    Every layer of the stack — from piece metadata to decentralized discovery — is designed to compose seamlessly.
+  </Card>
+  <Card title="Adaptive Execution" icon="arrows-rotate">
+    Workflows self-heal, route intelligently, and gracefully degrade when agents fail.
+  </Card>
+  <Card title="Open & Trusted" icon="shield-check">
+    Agents are verifiably trustworthy via the NANDA protocol, not just powerful.
+  </Card>
+  <Card title="Human-Centered Automation" icon="user-check">
+    Humans stay in control; automation amplifies rather than replaces human judgment.
+  </Card>
+</CardGroup>
+
+---
+
+## Phase 1 — Foundation Hardening *(Current · Q2 2026)*
+
+Stabilizes the core infrastructure and closes gaps between existing team roadmaps.
+
+**Flow Execution Engine**
+- Multi-region execution queue with automatic failover
+- Sub-second cold-start for flows triggered by AI agents
+- Structured execution traces consumable by downstream LLM summarizers
+
+**Piece Ecosystem Quality**
+- Automated metadata linting for `aiDescription` and `examples` on all 280+ pieces
+- Semantic versioning enforcement via CI gate
+- Community piece health dashboard (pass rate, latency P99, error breakdown)
+- Universal AI Piece GA: unified LLM gateway (OpenAI, Anthropic, Gemini, Bedrock)
+
+**Self-Hosting & Developer Experience**
+- One-command Docker Compose stack with hot-reload for piece development
+- `npx ap agent optimize` CLI GA
+- OpenTelemetry-native tracing export
+- Helm chart v2 with auto-scaling worker pools
+
+**Embedding SDK**
+- React SDK with white-label theming tokens
+- iframe-less embedding via Web Components
+- Event bridge: post-message API for host ↔ embedded flow communication
+
+---
+
+## Phase 2 — Agent OS: Core Integration *(Q3 2026)*
+
+Delivers the three-pillar Agent OS described in [AGENT_FRAMEWORK.md](https://github.com/AGI-Corporation/Route.X/blob/main/AGENT_FRAMEWORK.md) as production-grade features.
+
+### CactusRoute — Adaptive Execution Layer
+- Adaptive Repair GA: auto-correct top-20 LLM output errors
+- Semantic Guardrails v1: hallucination detection via output schema cross-referencing
+- Deterministic Fallback Engine: regex + schema-driven extraction when tool calls fail
+- Plugin API for custom repair strategies
+
+### NANDA Protocol — Decentralized Agent Discovery
+- `/.well-known/agent.json` endpoint GA for every Route.X instance
+- AgentFacts JSON-LD schema v1: capability, trust, and compliance broadcasting
+- Verified Trust Anchors: Ed25519 cryptographic signing of agent manifests
+- NANDA Index auto-submission
+- `npx ap agent nanda-publish` CLI GA
+- Compliance flags: `HIPAA`, `GDPR`, `SOC2` in manifests
+
+### Virtual Tool Orchestration — Guido Rule Engine
+- Tool Blending UI: drag-and-drop super-tool composer in the flow builder
+- Guido Rule Engine v1: declarative pre/post-condition rules for tool calls
+- Super-tool marketplace: publish blended tools for community reuse
+
+---
+
+## Phase 3 — Swarm Intelligence *(Q4 2026)*
+
+Generalizes the Mental Health Swarm proof-of-concept into a full multi-agent orchestration framework.
+
+### Swarm Orchestration Framework
+- Swarm Piece SDK: scaffolding for 10–1000 agent registries
+- Dynamic agent selection based on real-time capability scores
+- Inter-agent messaging bus with delivery guarantees
+- Circuit breaker: isolate degraded agents without stopping the swarm
+
+### Healthcare & Compliance Swarm (SMART on FHIR)
+- FHIR Piece GA with PHI redaction
+- Mental Health Swarm v2: CBT, DBT, crisis, and coaching specializations
+- CDS Hooks integration inside EHR clinical decision flows
+- HIPAA audit log: append-only, tamper-evident log for PHI-touching actions
+- BAA template generator for enterprise healthcare customers
+
+### Vertical Swarm Templates
+Customer Support · Sales Intelligence · DevOps · Research — all available as one-click marketplace installs.
+
+---
+
+## Phase 4 — Deep Platform Integration *(Q1 2027)*
+
+Unifies all surfaces — builder, tables, human-in-the-loop, embedding, and AI — into a single coherent agent environment.
+
+### Tables as Agent Memory
+- Native vector store columns (pgvector-backed)
+- Agent long-term memory API: `read_memory`, `write_memory`, `search_memory`
+- Semantic similarity search UI within Tables
+
+### Human-in-the-Loop 2.0
+- Approval Swarm: route to the right human based on context and authority
+- Mobile-native approval surfaces with biometric auth
+- SLA-aware escalation and full decision-lineage audit trail
+
+### AI Copilot (Flow Builder)
+- Natural language flow generation
+- AI-assisted step configuration from prior step outputs
+- Error healing suggestions inline for failed flow runs
+
+### Platform Admin
+- Multi-tenant agent quota management
+- Cost attribution dashboard ($ per flow run, per agent call)
+- Compliance reporting exports (SOC 2, ISO 27001, HIPAA)
+
+---
+
+## Phase 5 — Ecosystem & Open Agentic Web *(Q2 2027)*
+
+Scales Route.X into the connective tissue of the open agentic internet.
+
+### Agent Marketplace
+- Public registry for swarms, super-tools, and flow templates
+- Revenue sharing for piece and swarm developers
+- Verified publisher program with cryptographic identity
+- One-click deploy: install a marketplace swarm in < 60 seconds
+
+### Cross-Platform Interoperability
+- MCP (Model Context Protocol) bridge for LLM hosts
+- OpenAI Function-Calling adapter
+- LangChain / LlamaIndex native tool loader
+- A2A (Agent-to-Agent) protocol for task delegation
+- Bi-directional NANDA federation between Route.X instances
+
+### Developer Platform
+- Route.X SDK (TypeScript & Python)
+- GitHub App: trigger flows from PRs, issues, and deployments
+- GraphQL API GA
+- Webhooks v2: guaranteed delivery with signature verification UI
+
+### Observability & AI Safety
+- Agent Behavior Auditor: flag anomalous patterns and prompt injection attempts
+- Red-team mode: sandboxed environment for adversarial swarm testing
+- Global kill switch: pause all agent executions org-wide instantly
+
+---
+
+## Performance Targets
+
+| Metric | Current | Phase 2 | Phase 5 |
+|--------|---------|---------|---------|
+| Flow trigger latency (P50) | ~800 ms | < 300 ms | < 100 ms |
+| Piece action success rate | ~97% | > 99% | > 99.9% |
+| Agent manifest generation | N/A | < 500 ms | < 50 ms |
+| Swarm agent spin-up | N/A | < 2 s | < 200 ms |
+
+---
+
+## Team Roadmap Alignment
+
+| Team | Ph 1 | Ph 2 | Ph 3 | Ph 4 | Ph 5 |
+|------|------|------|------|------|------|
+| AI Copilot | Universal AI Piece | CactusRoute + NANDA | Swarm SDK | Flow Copilot | Cross-platform |
+| Flow Builder | Cold-start | Virtual Tool UI | Swarm monitor | AI Copilot UX | — |
+| Pieces | Metadata linting | aiDescription GA | Vertical swarms | FHIR Piece | Marketplace |
+| Tables | — | — | Agent memory | Vector search | — |
+| Human-in-Loop | — | — | Approval Swarm | HITL 2.0 | — |
+| Dev Experience | One-command stack | CLI GA | Swarm Piece SDK | — | Route.X SDK |
+| Embedding | Web Components | — | Swarm embedding | — | — |
+| Platform Admin | — | Compliance flags | HIPAA audit log | Cost attribution | Marketplace trust |
+
+---
+
+<Info>
+This roadmap is a living document. To propose changes, open an issue with the `roadmap` label, reference the relevant [team roadmap](/handbook/teams/overview), and for Agent OS proposals follow the conventions in [AGENT_FRAMEWORK.md](https://github.com/AGI-Corporation/Route.X/blob/main/AGENT_FRAMEWORK.md).
+</Info>

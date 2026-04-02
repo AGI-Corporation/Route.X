@@ -18,7 +18,7 @@
     "/openapi.json"
   ],
   "metadata": {
-    "description": "Open source no-code business automation· Zapier open source alternative"
+    "description": "Open source no-code business automation\u00b7 Zapier open source alternative"
   },
   "topbarCtaButton": {
     "name": "Get Started",
@@ -61,7 +61,8 @@
       "group": "Getting Started",
       "pages": [
         "getting-started/introduction",
-        "getting-started/principles"
+        "getting-started/principles",
+        "about/roadmap"
       ]
     },
     {
@@ -125,7 +126,7 @@
       ]
     },
     {
-      "group": "Engineering Playbooks", 
+      "group": "Engineering Playbooks",
       "icon": "code",
       "pages": [
         "handbook/engineering/playbooks/setup-incident-io",
@@ -286,9 +287,6 @@
             "endpoints/mcp-pieces/list"
           ]
         }
-
-        
-      
       ]
     },
     {
