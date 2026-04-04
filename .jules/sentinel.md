@@ -1,0 +1,4 @@
+## 2025-05-15 - Prevent sensitive data leakage in error responses
+**Vulnerability:** Sensitive fields (JWT tokens and license keys) were being serialized into error responses and returned to the client because they were included in the `params` of `ActivepiecesError`.
+**Learning:** The global error handler in `packages/server/api/src/app/helper/error-handler.ts` serializes all `params` from `ActivepiecesError` directly to the response body.
+**Prevention:** Avoid including any sensitive data in `BaseErrorParams` definitions. If sensitive data is needed for server-side logging, it should be logged explicitly before throwing the error, or the error handler should be modified to redact specific fields. For this fix, I updated the shared types to `Record<string, never>` to enforce zero-leakage.
