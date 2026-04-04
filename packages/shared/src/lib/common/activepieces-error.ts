@@ -121,7 +121,7 @@ Record<string, string> &
 export type AITokenLimitExceededParams = BaseErrorParams<ErrorCode.AI_TOKEN_LIMIT_EXCEEDED, {
     usage: number
     limit: number
-}> 
+}>
 
 export type PermissionDeniedErrorParams = BaseErrorParams<
 ErrorCode.PERMISSION_DENIED,
@@ -411,7 +411,7 @@ export type EmailAlreadyHasActivationKey = BaseErrorParams<ErrorCode.EMAIL_ALREA
 
 export type InvalidSmtpCredentialsErrorParams = BaseErrorParams<ErrorCode.INVALID_SMTP_CREDENTIALS, {
     message: string
-}>  
+}>
 
 export type InvalidGitCredentialsParams = BaseErrorParams<ErrorCode.INVALID_GIT_CREDENTIALS, {
     message: string
