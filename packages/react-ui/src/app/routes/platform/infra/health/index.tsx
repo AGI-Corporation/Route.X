@@ -39,13 +39,30 @@ export default function WorkersPage() {
         type: isVersionUpToDate ? STATUS.SUCCESS : STATUS.FAULT,
         message: isVersionUpToDate ? 'Up to date' : 'Update available',
       },
-      details: `<b>Current</b>: ${
-        currentVersion || 'Unknown'
-      }\n<b>Latest</b>: ${latestVersion || 'Unknown'}\n${
-        !isVersionUpToDate
-          ? 'Upgrade now to enjoy the latest features and bug fixes.\nCheck the changelog <a class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="https://github.com/activepieces/activepieces/releases" target="_blank">releases</a>.'
-          : ''
-      }`,
+      details: (
+        <>
+          <b>Current</b>: {currentVersion || 'Unknown'}
+          <br />
+          <b>Latest</b>: {latestVersion || 'Unknown'}
+          {!isVersionUpToDate && (
+            <>
+              <br />
+              Upgrade now to enjoy the latest features and bug fixes.
+              <br />
+              Check the changelog{' '}
+              <a
+                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                href="https://github.com/activepieces/activepieces/releases"
+                target="_blank"
+                rel="noreferrer"
+              >
+                releases
+              </a>
+              .
+            </>
+          )}
+        </>
+      ),
       faultIcon: <Frown size={16} />,
     },
     {
@@ -55,9 +72,24 @@ export default function WorkersPage() {
         type: socket.connected ? STATUS.SUCCESS : STATUS.FAULT,
         message: socket.connected ? t('Connected') : t('Disconnected'),
       },
-      details: socket.connected
-        ? t('No issues detected')
-        : 'Connection issues detected.<br>Visit the <a class="font-medium text-blue-600 dark:text-blue-500 hover:underline" href="https://www.activepieces.com/docs/install/configuration/troubleshooting" target="_blank">troubleshooting guide</a> for more details.',
+      details: socket.connected ? (
+        t('No issues detected')
+      ) : (
+        <>
+          Connection issues detected.
+          <br />
+          Visit the{' '}
+          <a
+            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            href="https://www.activepieces.com/docs/install/configuration/troubleshooting"
+            target="_blank"
+            rel="noreferrer"
+          >
+            troubleshooting guide
+          </a>{' '}
+          for more details.
+        </>
+      ),
       faultIcon: <WifiOff size={16} />,
     },
   ];
@@ -112,10 +144,7 @@ export default function WorkersPage() {
               <DataTableColumnHeader column={column} title="Details" />
             ),
             cell: ({ row }) => (
-              <div
-                className="whitespace-pre-line"
-                dangerouslySetInnerHTML={{ __html: row.original.details }}
-              />
+              <div className="whitespace-pre-line">{row.original.details}</div>
             ),
           },
         ]}
