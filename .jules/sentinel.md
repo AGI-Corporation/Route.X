@@ -1,0 +1,4 @@
+## 2025-05-15 - Secure OAuth Cross-Window Communication
+**Vulnerability:** OAuth codes were being transmitted via `postMessage` using the wildcard origin (`*`), and the receiver was validating the sender's origin using `startsWith`.
+**Learning:** Using `*` in `postMessage` allows any origin that opens the window to intercept sensitive data. In OAuth flows, this means a malicious site could potentially steal authorization codes if it manages to open the redirect window. Additionally, `startsWith` is insecure for origin validation as it can be bypassed (e.g., `https://trusted.com.attacker.com` starts with `https://trusted.com`).
+**Prevention:** Always specify an explicit target origin in `postMessage` (e.g., `window.location.origin` for same-origin or a resolved public URL for cross-origin). Always use strict equality (`===`) for origin verification and ensure the expected origin is derived from a trusted source.
