@@ -1,0 +1,4 @@
+## 2025-05-15 - Exposure of Sensitive Data in Error Parameters
+**Vulnerability:** Sensitive data (JWT tokens and License Keys) were included in the `params` field of `ActivepiecesError` objects, which are directly serialized and sent to the client by the global error handler in `packages/server/api/src/app/helper/error-handler.ts`.
+**Learning:** The global error handler's behavior of exposing the entire `params` object means that any data placed there is effectively public if the error is triggered. This creates a leak if `params` is used to provide context for debugging that includes secrets.
+**Prevention:** Strictly define error parameter types in `packages/shared/src/lib/common/activepieces-error.ts` to only include non-sensitive fields. Use `Record<string, never>` or empty objects for errors related to sensitive credentials.

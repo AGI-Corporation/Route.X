@@ -40,9 +40,7 @@ export const licenseKeysController: FastifyPluginAsyncTypebox = async (app) => {
         if (isNil(key)) {
             throw new ActivepiecesError({
                 code: ErrorCode.INVALID_LICENSE_KEY,
-                params: {
-                    key: licenseKey,
-                },
+                params: {},
             })
         }
         await platformService.update({
