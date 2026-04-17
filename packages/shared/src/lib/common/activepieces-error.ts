@@ -407,7 +407,7 @@ export type InvalidOtpParams = BaseErrorParams<ErrorCode.INVALID_OTP, Record<str
 
 export type InvalidLicenseKeyParams = BaseErrorParams<ErrorCode.INVALID_LICENSE_KEY, {
     key: string
-}>  
+}>
 
 export type EmailAlreadyHasActivationKey = BaseErrorParams<ErrorCode.EMAIL_ALREADY_HAS_ACTIVATION_KEY, {
     email: string
