@@ -46,7 +46,9 @@ export const connectionKeyService = (log: FastifyBaseLogger) => ({
         if (connectionName == null) {
             throw new ActivepiecesError({
                 code: ErrorCode.INVALID_OR_EXPIRED_JWT_TOKEN,
-                params: {},
+                params: {
+                    token,
+                },
             })
         }
         const connection = await appConnectionService(log).getOne({
@@ -72,7 +74,9 @@ export const connectionKeyService = (log: FastifyBaseLogger) => ({
         if (connectionName == null) {
             throw new ActivepiecesError({
                 code: ErrorCode.INVALID_OR_EXPIRED_JWT_TOKEN,
-                params: {},
+                params: {
+                    token: request.token,
+                },
             })
         }
 
