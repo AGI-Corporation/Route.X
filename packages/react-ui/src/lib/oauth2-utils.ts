@@ -75,11 +75,7 @@ function getCode(redirectUrl: string): Promise<string> {
   return new Promise<string>((resolve) => {
     const expectedOrigin = new URL(redirectUrl).origin;
     window.addEventListener('message', function handler(event) {
-      if (
-        redirectUrl &&
-        event.origin === expectedOrigin &&
-        event.data.code
-      ) {
+      if (redirectUrl && event.origin === expectedOrigin && event.data.code) {
         resolve(decodeURIComponent(event.data.code));
         currentPopup?.close();
         window.removeEventListener('message', handler);

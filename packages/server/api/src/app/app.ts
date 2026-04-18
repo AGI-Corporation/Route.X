@@ -257,9 +257,9 @@ export const setupApp = async (app: FastifyInstance): Promise<FastifyInstance> =
                 return reply
                     .type('text/html')
                     .send(
-                        `<script>if(window.opener){window.opener.postMessage({ 'code': '${encodeURIComponent(
+                        `<html><body><script>if(window.opener){window.opener.postMessage({ 'code': '${encodeURIComponent(
                             params.code,
-                        )}' }, '${expectedOrigin}')}</script> <html>Redirect successfully, this window should close now</html>`,
+                        )}' }, '${expectedOrigin}')}</script> Redirect successfully, this window should close now</body></html>`,
                     )
             }
         },
