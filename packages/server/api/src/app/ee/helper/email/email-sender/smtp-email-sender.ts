@@ -31,7 +31,7 @@ export const smtpEmailSender = (log: FastifyBaseLogger): SMTPEmailSender => {
                 throw new ActivepiecesError({
                     code: ErrorCode.INVALID_SMTP_CREDENTIALS,
                     params: {
-                        message: JSON.stringify(e),
+                        message: 'Invalid SMTP credentials',
                     },
                 })
             }
