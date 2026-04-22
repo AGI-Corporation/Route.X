@@ -83,7 +83,7 @@ const ConnectGitDialog = ({ open, setOpen, showButton }: ConnectGitProps) => {
       if (api.isError(error)) {
         const responseData = error.response?.data as ApErrorParams;
         if (responseData.code === ErrorCode.INVALID_GIT_CREDENTIALS) {
-          message = `Invalid git credentials, please check the credentials, \n ${responseData.params.message}`;
+          message = 'Invalid git credentials, please check the credentials.';
         }
       }
       form.setError('root.serverError', {
