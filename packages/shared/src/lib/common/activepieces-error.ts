@@ -278,9 +278,7 @@ ErrorCode.FLOW_IN_USE,
 
 export type InvalidJwtTokenErrorParams = BaseErrorParams<
 ErrorCode.INVALID_OR_EXPIRED_JWT_TOKEN,
-{
-    token: string
-}
+Record<string, never>
 >
 
 export type TestTriggerFailedErrorParams = BaseErrorParams<
@@ -405,21 +403,15 @@ ErrorCode.EXISTING_ALERT_CHANNEL,
 
 export type InvalidOtpParams = BaseErrorParams<ErrorCode.INVALID_OTP, Record<string, never>>
 
-export type InvalidLicenseKeyParams = BaseErrorParams<ErrorCode.INVALID_LICENSE_KEY, {
-    key: string
-}>  
+export type InvalidLicenseKeyParams = BaseErrorParams<ErrorCode.INVALID_LICENSE_KEY, Record<string, never>>
 
 export type EmailAlreadyHasActivationKey = BaseErrorParams<ErrorCode.EMAIL_ALREADY_HAS_ACTIVATION_KEY, {
     email: string
 }>
 
-export type InvalidSmtpCredentialsErrorParams = BaseErrorParams<ErrorCode.INVALID_SMTP_CREDENTIALS, {
-    message: string
-}>  
+export type InvalidSmtpCredentialsErrorParams = BaseErrorParams<ErrorCode.INVALID_SMTP_CREDENTIALS, Record<string, never>>
 
-export type InvalidGitCredentialsParams = BaseErrorParams<ErrorCode.INVALID_GIT_CREDENTIALS, {
-    message: string
-}>
+export type InvalidGitCredentialsParams = BaseErrorParams<ErrorCode.INVALID_GIT_CREDENTIALS, Record<string, never>>
 
 export type InvalidReleaseTypeParams = BaseErrorParams<ErrorCode.INVALID_RELEASE_TYPE, {
     message: string
