@@ -119,9 +119,7 @@ async function validateConnection(request: ConfigureRepoRequest): Promise<void> 
     catch (error) {
         throw new ActivepiecesError({
             code: ErrorCode.INVALID_GIT_CREDENTIALS,
-            params: {
-                message: (error as Error).message,
-            },
+            params: {},
         })
     }
     finally {
