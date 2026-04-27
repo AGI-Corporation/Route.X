@@ -809,10 +809,10 @@ async function migrateProjects(queryRunner: QueryRunner) {
             "showActivityLog"
         )
         VALUES (
-            '${platformId}',
+            ?,
             current_timestamp,
             current_timestamp,
-            '${ownerId}',
+            ?,
             'Activepieces',
             '#6e41e2',
             'https://cdn.activepieces.com/brand/logo.svg',
@@ -841,10 +841,10 @@ async function migrateProjects(queryRunner: QueryRunner) {
             0,
             0
         );
-    `)
+    `, [platformId, ownerId])
 
-        await queryRunner.query(`update "project" set "platformId" = '${platformId}' where "id" = '${project.id}'`)
-        await queryRunner.query(`update "user" set "platformId" = '${platformId}' where "id" = '${ownerId}'`)
+        await queryRunner.query('update "project" set "platformId" = ? where "id" = ?', [platformId, project.id])
+        await queryRunner.query('update "user" set "platformId" = ? where "id" = ?', [platformId, ownerId])
     }
     log.info('CreateDefaultPlatform1705967115116 up done')
 }

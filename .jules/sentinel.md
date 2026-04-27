@@ -1,0 +1,4 @@
+## 2026-04-27 - [HIGH] SQL Injection in Database Migrations
+**Vulnerability:** SQL injection vulnerabilities were found in several database migration files (`ModifyProjectMembers`, `AddPlatformToPostgres`, `CreateDefaultPlaformSqlite`) where template literal string interpolation was used to construct raw SQL queries within `queryRunner.query()`.
+**Learning:** Migration scripts that iterate over existing data and perform further queries or inserts are often overlooked but pose a significant security risk if they don't use parameterized queries. Additionally, TypeORM's `queryRunner.query()` passes queries directly to the driver, requiring driver-specific placeholders: `$1, $2, ...` for PostgreSQL and `?` for SQLite.
+**Prevention:** Use parameterized queries (`queryRunner.query(sql, [params])`) for all raw SQL in migrations. Always verify the correct placeholder syntax for the target database driver.
