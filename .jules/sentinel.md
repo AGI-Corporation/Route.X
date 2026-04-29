@@ -1,0 +1,4 @@
+## 2025-05-22 - SQL Injection in Database Migrations
+**Vulnerability:** Raw SQL queries in TypeORM migrations used string interpolation (`${variable}`) for user-supplied or record-derived data (IDs, emails), bypassing parameterized query protections.
+**Learning:** Database migrations that use `queryRunner.query()` are susceptible to SQL injection if they interpolate variables. This was found in both PostgreSQL and SQLite migrations. Additionally, manual data migrations within these scripts often lack defensive checks (e.g., assuming a record exists after a SELECT) which can lead to runtime crashes during migration.
+**Prevention:** Always use parameterized queries (`queryRunner.query('SQL', [args])`) with appropriate placeholders (`$n` for Postgres, `?` for SQLite). Implement defensive checks when manually processing records in migrations to handle missing or unexpected data.
