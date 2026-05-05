@@ -118,7 +118,7 @@ export const SmtpSection = () => {
       if (api.isError(e)) {
         const responseData = e.response?.data as ApErrorParams;
         if (responseData.code === ErrorCode.INVALID_SMTP_CREDENTIALS) {
-          message = `Invalid SMTP credentials, please check the credentials, \n ${responseData.params.message}`;
+          message = t('Invalid SMTP credentials, please check the credentials');
         }
       }
       form.setError('root.serverError', {
