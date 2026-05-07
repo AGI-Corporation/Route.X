@@ -1,0 +1,4 @@
+## 2025-05-14 - [Vulnerabilities in Database Migrations]
+**Vulnerability:** SQL Injection via string interpolation in raw TypeORM migrations and manual data migration scripts.
+**Learning:** Historical migrations (specifically those involving Platform and Project Member entities) were using template literals to inject user-controlled or derived data into raw SQL queries. Additionally, raw queries in TypeORM return arrays, but were sometimes accessed as if they returned single objects, leading to potential runtime errors or silent data bugs.
+**Prevention:** Always use parameterized queries for raw SQL in migrations. Be aware of driver-specific placeholder syntax: `$1, $2, ...` for PostgreSQL and `?` for SQLite. Always perform defensive checks on raw query results (e.g., `user.length > 0`) before accessing properties.
