@@ -73,10 +73,11 @@ function constructUrl(params: OAuth2PopupParams, pckeChallenge: string) {
 
 function getCode(redirectUrl: string): Promise<string> {
   return new Promise<string>((resolve) => {
+    const expectedOrigin = new URL(redirectUrl).origin;
     window.addEventListener('message', function handler(event) {
       if (
         redirectUrl &&
-        redirectUrl.startsWith(event.origin) &&
+        event.origin === expectedOrigin &&
         event.data['code']
       ) {
         resolve(decodeURIComponent(event.data.code));
