@@ -96,8 +96,8 @@ async function migrateProjects(queryRunner: QueryRunner) {
             'f', 't', 'en', 'f', 'f', '{}', 'f', 'f', '{}', 'f', 'f', 'f');`,
             [platformId, ownerId],
         )
-        await queryRunner.query(`update "project" set "platformId" = '${platformId}' where "id" = '${project.id}'`)
-        await queryRunner.query(`update "user" set "platformId" = '${platformId}' where "id" = '${ownerId}'`)
+        await queryRunner.query('update "project" set "platformId" = $1 where "id" = $2', [platformId, project.id])
+        await queryRunner.query('update "user" set "platformId" = $1 where "id" = $2', [platformId, ownerId])
     }
     log.info('CreateDefaultPlatform1705967115116 up done')
 }
