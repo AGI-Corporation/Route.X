@@ -1,8 +1,9 @@
-import { ApLock } from '@activepieces/server-shared'
+import { ApLock, AppSystemProp } from '@activepieces/server-shared'
 import { FileCompression, FileType } from '@activepieces/shared'
 import { FastifyBaseLogger } from 'fastify'
 import { databaseConnection } from '../../database/database-connection'
 import { distributedLock } from '../../helper/lock'
+import { DatabaseType, system } from '../../helper/system/system'
 import { fileService } from '../file.service'
 
 const BATCH_SIZE = 1000
@@ -56,8 +57,10 @@ export const stepFileMigration = (log: FastifyBaseLogger) => {
                                     stepName: stepFile.stepName,
                                 },
                             })
+                            const dbType = system.get(AppSystemProp.DB_TYPE)
                             await queryRunner.query(
-                                `DELETE FROM step_file WHERE id = '${stepFile.id}'`,
+                                `DELETE FROM step_file WHERE id = ${dbType === DatabaseType.SQLITE3 ? '?' : '$1'}`,
+                                [stepFile.id],
                             )
                         }
                         log.info({
