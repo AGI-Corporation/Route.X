@@ -38,15 +38,15 @@ export class ModifyProjectMembers1717961669938 implements MigrationInterface {
             if (projectMember.role === 'EXTERNAL_CUSTOMER') {
                 projectMember.role = 'OPERATOR'
             }
-            const user = await queryRunner.query(`SELECT * FROM "user" WHERE email = '${projectMember.email}' AND "platformId" = '${projectMember.platformId}'`)
+            const user = await queryRunner.query('SELECT * FROM "user" WHERE email = $1 AND "platformId" = $2', [projectMember.email, projectMember.platformId])
             if (user.length === 0) {
                 // Skip if user not found
                 continue
             }
             await queryRunner.query(`
             INSERT INTO "project_member" ("id", "created", "updated", "projectId", "platformId", "userId", "role")
-            VALUES ('${projectMember.id}','${dayjs(projectMember.created).toISOString()}', '${dayjs(projectMember.updated).toISOString()}', '${projectMember.projectId}', '${projectMember.platformId}', '${user[0].id}', '${projectMember.role}')
-        `)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `, [projectMember.id, dayjs(projectMember.created).toISOString(), dayjs(projectMember.updated).toISOString(), projectMember.projectId, projectMember.platformId, user[0].id, projectMember.role])
         }
     }
 
@@ -82,11 +82,15 @@ export class ModifyProjectMembers1717961669938 implements MigrationInterface {
             CREATE UNIQUE INDEX "idx_project_member_project_id_email_platform_id" ON "project_member" ("projectId", "email", "platformId")
         `)
         for (const projectMember of projectMembers) {
-            const user = await queryRunner.query(`SELECT * FROM "user" WHERE id = '${projectMember.userId}'`)
+            const user = await queryRunner.query('SELECT * FROM "user" WHERE id = $1', [projectMember.userId])
+            if (user.length === 0) {
+                // Skip if user not found
+                continue
+            }
             await queryRunner.query(`
             INSERT INTO "project_member" ("id", "created", "updated", "projectId", "platformId", "email", "status", "role")
-            VALUES ('${projectMember.id}','${dayjs(projectMember.created).toISOString()}', '${dayjs(projectMember.updated).toISOString()}', '${projectMember.projectId}', '${projectMember.platformId}', '${user.email}', '${projectMember.status}', '${projectMember.role}')
-        `)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        `, [projectMember.id, dayjs(projectMember.created).toISOString(), dayjs(projectMember.updated).toISOString(), projectMember.projectId, projectMember.platformId, user[0].email, projectMember.status, projectMember.role])
         }
     }
 
